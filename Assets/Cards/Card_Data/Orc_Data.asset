@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Orc_Data
   m_EditorClassIdentifier: 
   card_name: Orc
-  description: Likes to swing and Axe
+  description: Likes to swing an Axe
   health: 3
   cost: 2
   damage: 2
