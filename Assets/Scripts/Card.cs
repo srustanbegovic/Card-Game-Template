@@ -7,35 +7,27 @@ using UnityEngine.UI;
 public class Card : MonoBehaviour
 {
     public Card_data data;
-
-    public string card_name;
-    public string description;
-    public int health;
-    public int cost;
-    public int damage;
+    public int suit;
+    public string tcard;
+    public string bcard;
+    public int value;
     public Sprite sprite;
-    public TextMeshProUGUI nameText;
-    public TextMeshProUGUI descriptionText;
-    public TextMeshProUGUI healthText;
-    public TextMeshProUGUI costText;
-    public TextMeshProUGUI damageText;
+    public TextMeshProUGUI bcardText;
+    public TextMeshProUGUI tcardText;
+    public TextMeshProUGUI valueText;
     public Image spriteImage;
         
 
     // Start is called before the first frame update
     void Start()
     {
-        card_name = data.card_name;
-        description = data.description;
-        health = data.health;
-        cost = data.cost;
-        damage = data.damage;
+        bcard = data.bcard;
+        tcard = data.tcard;
+        value = data.value;
         sprite = data.sprite;
-        nameText.text = card_name;
-        descriptionText.text = description;
-        healthText.text = health.ToString();
-        costText.text = cost.ToString();
-        damageText.text = damage.ToString();
+        bcardText.text = bcard.ToString();
+        tcardText.text = tcard.ToString();
+        valueText.text = value.ToString();
         spriteImage.sprite = sprite;
 
     }
