@@ -10,5 +10,4 @@ public class Card_data : ScriptableObject
     public string tcard;
     public int value;
     public Sprite sprite;
-
 }
