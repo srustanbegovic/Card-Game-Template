@@ -25,9 +25,6 @@ public class Card : MonoBehaviour
         tcard = data.tcard;
         value = data.value;
         sprite = data.sprite;
-        bcardText.text = bcard.ToString();
-        tcardText.text = tcard.ToString();
-        valueText.text = value.ToString();
         spriteImage.sprite = sprite;
 
     }
