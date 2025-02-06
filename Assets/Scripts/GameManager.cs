@@ -6,20 +6,26 @@ public class GameManager : MonoBehaviour
 {
 
     public static GameManager gm;
-    public class Card
-    {
-        public int suit;
-        public int color; 
-        public int value;
-        public Sprite sprite;
-    }
+    
     public List<Card> deck = new List<Card>();
+    public List<Card> c1 = new List<Card>();
+    public List<Card> c2 = new List<Card>();
+    public List<Card> c3 = new List<Card>();
+    public List<Card> c4 = new List<Card>();
+    public List<Card> c5 = new List<Card>();
+    public List<Card> c6 = new List<Card>();
+    public List<Card> c7 = new List<Card>();
+
+    public List<Card> aces = new List<Card>();
+    public List<Card> clubs = new List<Card>();
+    public List<Card> hearts = new List<Card>();
+    public List<Card> diamonds = new List<Card>();
     public List<Card> flippedcards = new List<Card>();
-    public GameObject cardPrefab;
     public int suit;
     public int value;
     public int color;
     public int cardnumber; 
+    private Card tempCard;
 
     private void Awake()
     {
@@ -42,7 +48,8 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        print(deck.Count);
+        print (deck);
     }
 
     void Deal()
@@ -53,9 +60,9 @@ public class GameManager : MonoBehaviour
     void CreateCards()
     {
         value = 1;
-        suit = 1;
-        color =1; 
-        for (int i = 1; i < 53) 
+        suit = 0;
+        color =0; 
+        for (int i = 1; i < 53; i++)
         {
             if (i % 13 == 0)
             {
@@ -67,25 +74,27 @@ public class GameManager : MonoBehaviour
                 color++;
             }
     
-            GameObject cardObject = CreateCard(suit, value, color);
-            
+        
+            CreateCard();
             value++;
         }
     }
-
-    GameObject CreateCard()
+    void CreateCard()
     {
-        GameObject cardObject = Instantiate(cardPrefab, new Vector3(0, 0, 0), Quaternion.identity);
-        Card card = new Card();
+
+        Card card = Instantiate(tempCard, new Vector3(0, 0, 0), Quaternion.identity);
+        card.data = ScriptableObject.CreateInstance<Card_data>();
+        //mr ansell wasnt sure about line 86, dont touch until hes helping me.
+
         card.suit = suit;
         card.value = value;
         card.color = color;
-        card.sprite = cardObject.GetComponent<SpriteRenderer>().sprite;
         deck.Add(card);
-        return cardObject;
+
+        bcard = data.bcard;
+        tcard = data.tcard;
+        value = data.value;
+        sprite = data.sprite;
+        spriteImage.sprite = sprite;
     }
-
-
-
-    
 }

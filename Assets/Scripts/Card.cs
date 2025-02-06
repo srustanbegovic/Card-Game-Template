@@ -4,34 +4,18 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
-public class Card : MonoBehaviour
+public class Card 
 {
     public Card_data data;
     public int suit;
     public string tcard;
     public string bcard;
     public int value;
+    public int color;
     public Sprite sprite;
     public TextMeshProUGUI bcardText;
     public TextMeshProUGUI tcardText;
-    public TextMeshProUGUI valueText;
     public Image spriteImage;
-        
+    public bool played;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        bcard = data.bcard;
-        tcard = data.tcard;
-        value = data.value;
-        sprite = data.sprite;
-        spriteImage.sprite = sprite;
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

@@ -9,5 +9,7 @@ public class Card_data : ScriptableObject
     public string bcard;
     public string tcard;
     public int value;
+    public int color; 
     public Sprite sprite;
+    public bool played;
 }
