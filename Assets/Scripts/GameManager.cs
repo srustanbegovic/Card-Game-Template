@@ -75,11 +75,26 @@ public class GameManager : MonoBehaviour
             }
     
         
-            CreateCard();
+            CreateCard(suit, value, color);
             value++;
         }
     }
-    void CreateCard()
+    
+void CreateCard(int suit, int value, int color)
+{
+    // Instantiate the card GameObject
+    //GameObject cardObject = Instantiate(tempCard, new Vector3(0, 0, 0), Quaternion.identity);
+
+    // Create a new Card_data instance
+    Card_data cardData = ScriptableObject.CreateInstance<Card_data>();
+    cardData.Initialize(suit, value, color, false, value.ToString(), null);
+   
+    Card card = Instantiate(tempCard, new Vector3(0, 0, 0), Quaternion.identity);
+    
+    deck.Add(card);
+}
+    /*
+    void CreateCard(int _suit, int _value, int _color)
     {
 
         Card card = Instantiate(tempCard, new Vector3(0, 0, 0), Quaternion.identity);
@@ -91,10 +106,14 @@ public class GameManager : MonoBehaviour
         card.color = color;
         deck.Add(card);
 
+      
+    /*  
         bcard = data.bcard;
         tcard = data.tcard;
         value = data.value;
         sprite = data.sprite;
         spriteImage.sprite = sprite;
-    }
+
+        */
+    //}
 }
