@@ -22,8 +22,7 @@ public class GameManager : MonoBehaviour
     public List<Card> diamonds = new List<Card>();
     public List<Card> flippedcards = new List<Card>();
     public int suit;
-    public int value;
-    public int color;
+    public int value;    public int color;
     public int cardnumber; 
     private Card tempCard;
 
@@ -42,14 +41,14 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        CreateCards();
+        CreateDeck();
     }
 
     // Update is called once per frame
     void Update()
     {
-        print(deck.Count);
-        print (deck);
+        //print(deck.Count);  
+        //print (deck);
     }
 
     void Deal()
@@ -57,7 +56,7 @@ public class GameManager : MonoBehaviour
         
     }
 
-    void CreateCards()
+    void CreateDeck()
     {
         value = 1;
         suit = 0;
@@ -74,7 +73,7 @@ public class GameManager : MonoBehaviour
                 color++;
             }
     
-        
+            print("Suit: " + suit + " Value: " + value + " Color: " + color);
             CreateCard(suit, value, color);
             value++;
         }
@@ -87,7 +86,7 @@ void CreateCard(int suit, int value, int color)
 
     // Create a new Card_data instance
     Card_data cardData = ScriptableObject.CreateInstance<Card_data>();
-    cardData.Initialize(suit, value, color, false, value.ToString(), null);
+    //cardData.Initialize(suit, value, color, false, value.ToString(), null);
    
     Card card = Instantiate(tempCard, new Vector3(0, 0, 0), Quaternion.identity);
     

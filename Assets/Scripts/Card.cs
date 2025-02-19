@@ -12,15 +12,15 @@ public class Card : MonoBehaviour
 
     [SerializeField] private Image cardImage; 
 
-    /*public int suit;
+    public int suit;
     public string tcard;
     public int value;
     public int color;
     public Sprite sprite;
-    public TextMeshProUGUI bcardText;
-    public TextMeshProUGUI tcardText;
+    //public TextMeshProUGUI bcardText;
+    //public TextMeshProUGUI tcardText;
     public Image spriteImage;
-    public bool played;*/
+    public bool played;
 
 
     public void Initialize(Card_data data)
