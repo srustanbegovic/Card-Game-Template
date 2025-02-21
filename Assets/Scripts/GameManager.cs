@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     public List<Card> c5 = new List<Card>();
     public List<Card> c6 = new List<Card>();
     public List<Card> c7 = new List<Card>();
+    
 
     public List<Card> aces = new List<Card>();
     public List<Card> clubs = new List<Card>();
@@ -22,9 +23,12 @@ public class GameManager : MonoBehaviour
     public List<Card> diamonds = new List<Card>();
     public List<Card> flippedcards = new List<Card>();
     public int suit;
-    public int value;    public int color;
+    public int value;   
+    public int color;
     public int cardnumber; 
-    private Card tempCard;
+    public GameObject DeckPosition;
+    public Card tempCard;
+    public Transform canvas;
 
     private void Awake()
     {
@@ -73,7 +77,7 @@ public class GameManager : MonoBehaviour
                 color++;
             }
     
-            print("Suit: " + suit + " Value: " + value + " Color: " + color);
+            //print("Suit: " + suit + " Value: " + value + " Color: " + color);
             CreateCard(suit, value, color);
             value++;
         }
@@ -86,9 +90,15 @@ void CreateCard(int suit, int value, int color)
 
     // Create a new Card_data instance
     Card_data cardData = ScriptableObject.CreateInstance<Card_data>();
+    cardData.suit = suit;
+    cardData.value = value;
+    cardData.color = color;
     //cardData.Initialize(suit, value, color, false, value.ToString(), null);
    
-    Card card = Instantiate(tempCard, new Vector3(0, 0, 0), Quaternion.identity);
+    Card card = Instantiate(tempCard, DeckPosition.transform.position, Quaternion.identity);
+    card.Initialize(cardData);
+    card.name = cardData.suit + " " + cardData.value + " " + cardData.color;
+    card.transform.SetParent(canvas);
     
     deck.Add(card);
 }
