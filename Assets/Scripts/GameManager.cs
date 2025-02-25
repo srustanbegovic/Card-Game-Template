@@ -37,6 +37,20 @@ public class GameManager : MonoBehaviour
     public Card tempCard;
     public Transform canvas;
 
+    public CardStack deckStack;
+    public CardStack tableau1;
+    public CardStack tableau2;
+    public CardStack tableau3;
+    public CardStack tableau4;
+    public CardStack tableau5;
+    public CardStack tableau6;
+    public CardStack tableau7;
+    public CardStack foundation1;
+    public CardStack foundation2;
+    public CardStack foundation3;
+    public CardStack foundation4;
+    public CardStack wastePile;
+
     private void Awake()
     {
         if (gm != null && gm != this)
@@ -52,57 +66,29 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        InitializeStackPositions();
         CreateDeck();
     }
 
-    // Update is called once per frame
-    void Update()
+    void InitializeStackPositions()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
-        {
-            ShuffleDeck();
-            Deal(c1pos, 1, c1);
-            Deal(c2pos, 2, c2);
-            Deal(c3pos, 3, c3);
-            Deal(c4pos, 4, c4);
-            Deal(c5pos, 5, c5);
-            Deal(c6pos, 6, c6);
-            Deal(c7pos, 7, c7);
-            UpdateCardDisplay();
-        }
+        // Set positions of all stacks
+        //deckStack.transform.position = DeckPosition;
+        
+        // Set tableau positions
+        tableau1.transform.position = c1pos;
+        tableau2.transform.position = c2pos;
+        tableau3.transform.position = c3pos;
+        tableau4.transform.position = c4pos;
+        tableau5.transform.position = c5pos;
+        tableau6.transform.position = c6pos;
+        tableau7.transform.position = c7pos;
+        
+        // Set foundation positions (wherever you want them)
+        // foundation1.transform.position = ...
+        // ...
     }
 
-    void Deal(Vector3 deckpos, int numofcards, List<Card> deckdest)
-    {
-        for (int i = 0; i < numofcards; i++)
-        {
-            deckdest.Add(deck[i]);
-            deckpos = new Vector3(deckpos.x, deckpos.y - (15*i), deckpos.z);
-            deck[i].transform.position = deckpos;
-            deck[i].transform.SetParent(canvas);
-            deck.RemoveAt(i);
-            Renderer cardRenderer = deckdest[i].GetComponent<Renderer>();
-            cardRenderer.sortingOrder = numofcards - i;
-            if (i == numofcards - 1)
-            {
-                deckdest[i].flipped = true;
-            }
-            else 
-            {
-                deckdest[i].flipped = false;
-            }
-        }
-    }
-    void ShuffleDeck()
-    {
-        for (int i = 0; i < deck.Count; i++)
-        {
-            Card temp = deck[i];
-            int randomIndex = Random.Range(i, deck.Count);
-            deck[i] = deck[randomIndex];
-            deck[randomIndex] = temp;
-        }
-    }
     void CreateDeck()
     {
         value = 1;
@@ -124,6 +110,25 @@ public class GameManager : MonoBehaviour
             CreateCard(suit, value, color);
             value++;
         }
+        
+        // Add them to the deck stack instead of the deck list
+        for (int i = 0; i < 52; i++)
+        {
+            Card card = Instantiate(tempCard, DeckPosition, Quaternion.identity);
+            
+            // Initialize card data
+            Card_data cardData = ScriptableObject.CreateInstance<Card_data>();
+            cardData.suit = suit;
+            cardData.value = value;
+            cardData.color = color;
+            card.Initialize(cardData);
+            
+            // Add directly to the deck stack
+            deckStack.AddCard(card);
+        }
+        
+        // Shuffle the deck
+        ShuffleDeck();
     }
     
     void CreateCard(int suit, int value, int color)
@@ -176,4 +181,72 @@ public class GameManager : MonoBehaviour
         }
     }
     
+    void ShuffleDeck()
+    {
+        // Create a temporary list of cards
+        List<Card> tempDeckList = new List<Card>(deckStack.cardsInStack);
+        
+        // Clear the deck stack
+        deckStack.cardsInStack.Clear();
+        
+        // Fisher-Yates shuffle
+        for (int i = 0; i < tempDeckList.Count; i++)
+        {
+            int randomIndex = Random.Range(i, tempDeckList.Count);
+            Card temp = tempDeckList[i];
+            tempDeckList[i] = tempDeckList[randomIndex];
+            tempDeckList[randomIndex] = temp;
+        }
+        
+        // Add cards back to deck stack in shuffled order
+        foreach (Card card in tempDeckList)
+        {
+            deckStack.AddCard(card);
+        }
+    }
+
+    void DealCards()
+    {
+        // Deal to tableau 1 (1 card)
+        DealToTableau(tableau1, 1);
+        
+        // Deal to tableau 2 (2 cards)
+        DealToTableau(tableau2, 2);
+        
+        // And so on...
+        DealToTableau(tableau3, 3);
+        DealToTableau(tableau4, 4);
+        DealToTableau(tableau5, 5);
+        DealToTableau(tableau6, 6);
+        DealToTableau(tableau7, 7);
+    }
+
+    void DealToTableau(CardStack tableau, int numCards)
+    {
+        for (int i = 0; i < numCards; i++)
+        {
+            if (deckStack.cardsInStack.Count > 0)
+            {
+                // Get top card from deck
+                Card card = deckStack.RemoveTopCard();
+                
+                // Only flip the top card of each tableau
+                card.flipped = (i == numCards - 1);
+                card.UpdateCardDisplay();
+                
+                // Add to tableau
+                tableau.AddCard(card);
+            }
+        }
+    }
+
+    // Method to move a card between stacks
+    public void MoveCard(Card card, CardStack sourceStack, CardStack targetStack)
+    {
+        // Remove from source
+        sourceStack.RemoveCard(card);
+        
+        // Add to target
+        targetStack.AddCard(card);
+    }
 }

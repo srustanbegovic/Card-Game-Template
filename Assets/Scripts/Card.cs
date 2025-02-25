@@ -34,7 +34,10 @@ public class Card : MonoBehaviour
 
         UpdateCardDisplay();
     }
-
+    public void BringToFront()
+    {
+        transform.SetAsLastSibling();
+    }
     public void UpdateCardDisplay()
     {
         if (flipped) 
