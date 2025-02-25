@@ -10,5 +10,5 @@ public class Card_data : ScriptableObject
     public int value;
     public int color; 
     public Sprite sprite;
-    public bool played;
+    public bool flipped;
 }

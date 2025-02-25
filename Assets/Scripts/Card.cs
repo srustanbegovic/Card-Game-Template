@@ -16,11 +16,9 @@ public class Card : MonoBehaviour
     public string tcard;
     public int value;
     public int color;
+    //public Sprite sprite;
     public Sprite sprite;
-    //public TextMeshProUGUI bcardText;
-    //public TextMeshProUGUI tcardText;
-    public Image spriteImage;
-    public bool played;
+    public bool flipped;
 
     public void Initialize(Card_data data)
     {
@@ -30,20 +28,30 @@ public class Card : MonoBehaviour
         value = data.value;
         color = data.color;
         sprite = data.sprite;
-        played = data.played;
+        flipped = data.flipped;
         tcardText = transform.GetChild(3).GetComponent<TextMeshProUGUI>();
         bcardText = transform.GetChild(5).GetComponent<TextMeshProUGUI>();
 
         UpdateCardDisplay();
     }
 
-    private void UpdateCardDisplay()
+    public void UpdateCardDisplay()
     {
-        string cardText = GetCardText();
-        //print(cardText);
-        print(cardText);
-        tcardText.text = cardText;
-        bcardText.text = cardText;
+        if (flipped) 
+        {
+            string cardText = GetCardText();
+            //print(cardText);
+            print(cardText);
+            tcardText.text = cardText;
+            bcardText.text = cardText;
+           
+        }
+        else
+        {
+            tcardText.text = "";
+            bcardText.text = "";
+            sprite = null; 
+        }
     }
 
     private  string GetCardText()

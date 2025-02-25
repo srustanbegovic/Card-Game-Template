@@ -9,12 +9,19 @@ public class GameManager : MonoBehaviour
     
     public List<Card> deck = new List<Card>();
     public List<Card> c1 = new List<Card>();
+    public Vector3 c1pos; 
     public List<Card> c2 = new List<Card>();
+    public Vector3 c2pos;
     public List<Card> c3 = new List<Card>();
+    public Vector3 c3pos;
     public List<Card> c4 = new List<Card>();
+    public Vector3 c4pos;
     public List<Card> c5 = new List<Card>();
+    public Vector3 c5pos;
     public List<Card> c6 = new List<Card>();
+    public Vector3 c6pos;
     public List<Card> c7 = new List<Card>();
+    public Vector3 c7pos;
     
 
     public List<Card> aces = new List<Card>();
@@ -26,7 +33,7 @@ public class GameManager : MonoBehaviour
     public int value;   
     public int color;
     public int cardnumber; 
-    public GameObject DeckPosition;
+    public Vector3 DeckPosition;
     public Card tempCard;
     public Transform canvas;
 
@@ -51,15 +58,51 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //print(deck.Count);  
-        //print (deck);
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            ShuffleDeck();
+            Deal(c1pos, 1, c1);
+            Deal(c2pos, 2, c2);
+            Deal(c3pos, 3, c3);
+            Deal(c4pos, 4, c4);
+            Deal(c5pos, 5, c5);
+            Deal(c6pos, 6, c6);
+            Deal(c7pos, 7, c7);
+            UpdateCardDisplay();
+        }
     }
 
-    void Deal()
+    void Deal(Vector3 deckpos, int numofcards, List<Card> deckdest)
     {
-        
+        for (int i = 0; i < numofcards; i++)
+        {
+            deckdest.Add(deck[i]);
+            deckpos = new Vector3(deckpos.x, deckpos.y - (15*i), deckpos.z);
+            deck[i].transform.position = deckpos;
+            deck[i].transform.SetParent(canvas);
+            deck.RemoveAt(i);
+            Renderer cardRenderer = deckdest[i].GetComponent<Renderer>();
+            cardRenderer.sortingOrder = numofcards - i;
+            if (i == numofcards - 1)
+            {
+                deckdest[i].flipped = true;
+            }
+            else 
+            {
+                deckdest[i].flipped = false;
+            }
+        }
     }
-
+    void ShuffleDeck()
+    {
+        for (int i = 0; i < deck.Count; i++)
+        {
+            Card temp = deck[i];
+            int randomIndex = Random.Range(i, deck.Count);
+            deck[i] = deck[randomIndex];
+            deck[randomIndex] = temp;
+        }
+    }
     void CreateDeck()
     {
         value = 1;
@@ -83,46 +126,54 @@ public class GameManager : MonoBehaviour
         }
     }
     
-void CreateCard(int suit, int value, int color)
-{
-    // Instantiate the card GameObject
-    //GameObject cardObject = Instantiate(tempCard, new Vector3(0, 0, 0), Quaternion.identity);
-
-    // Create a new Card_data instance
-    Card_data cardData = ScriptableObject.CreateInstance<Card_data>();
-    cardData.suit = suit;
-    cardData.value = value;
-    cardData.color = color;
-    //cardData.Initialize(suit, value, color, false, value.ToString(), null);
-   
-    Card card = Instantiate(tempCard, DeckPosition.transform.position, Quaternion.identity);
-    card.Initialize(cardData);
-    card.name = cardData.suit + " " + cardData.value + " " + cardData.color;
-    card.transform.SetParent(canvas);
-    
-    deck.Add(card);
-}
-    /*
-    void CreateCard(int _suit, int _value, int _color)
+    void CreateCard(int suit, int value, int color)
     {
-
-        Card card = Instantiate(tempCard, new Vector3(0, 0, 0), Quaternion.identity);
-        card.data = ScriptableObject.CreateInstance<Card_data>();
-        //mr ansell wasnt sure about line 86, dont touch until hes helping me.
-
-        card.suit = suit;
-        card.value = value;
-        card.color = color;
+        Card_data cardData = ScriptableObject.CreateInstance<Card_data>();
+        cardData.suit = suit;
+        cardData.value = value;
+        cardData.color = color;
+        print(DeckPosition);
+        Card card = Instantiate(tempCard, DeckPosition, Quaternion.identity);
+        card.Initialize(cardData);
+        card.name = cardData.suit + " " + cardData.value + " " + cardData.color;
+        card.transform.SetParent(canvas);
+    
         deck.Add(card);
-
-      
-    /*  
-        bcard = data.bcard;
-        tcard = data.tcard;
-        value = data.value;
-        sprite = data.sprite;
-        spriteImage.sprite = sprite;
-
-        */
-    //}
+    }
+    void UpdateCardDisplay()
+    {
+        foreach (Card card in deck)
+        {
+            card.UpdateCardDisplay();
+        }
+        foreach (Card card in c1)
+        {
+            card.UpdateCardDisplay();
+        }
+        foreach (Card card in c2)
+        {
+            card.UpdateCardDisplay();
+        }
+        foreach (Card card in c3)
+        {
+            card.UpdateCardDisplay();
+        }
+        foreach (Card card in c4)
+        {
+            card.UpdateCardDisplay();
+        }
+        foreach (Card card in c5)
+        {
+            card.UpdateCardDisplay();
+        }
+        foreach (Card card in c6)
+        {
+            card.UpdateCardDisplay();
+        }
+        foreach (Card card in c7)
+        {
+            card.UpdateCardDisplay();
+        }
+    }
+    
 }
