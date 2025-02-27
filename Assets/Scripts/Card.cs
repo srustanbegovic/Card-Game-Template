@@ -56,6 +56,21 @@ public class Card : MonoBehaviour
             print(cardText);
             tcardText.text = cardText;
             bcardText.text = cardText;
+            //we need to get the image, not the sprite component
+            //sprite.GetComponent<Image>() = gm.cardSuits[suit];
+            if(suit == 0 || suit == 1)
+            {
+                tcardText.color = Color.black;
+                bcardText.color = Color.black;
+                
+                
+
+            }
+            else
+            {
+                tcardText.color = Color.red;
+                bcardText.color = Color.red;
+            }
             sprite = gm.cardSuits[suit];
            
         }
