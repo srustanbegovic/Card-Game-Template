@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-
+   #region variables
     public static GameManager gm;
     
     public List<Card> deck = new List<Card>();
@@ -50,7 +50,10 @@ public class GameManager : MonoBehaviour
     public CardStack foundation3;
     public CardStack foundation4;
     public CardStack wastePile;
-
+    public Sprite[] cardSuits;
+    #endregion
+    
+   
     private void Awake()
     {
         if (gm != null && gm != this)
@@ -66,8 +69,17 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        InitializeStackPositions();
+        //InitializeStackPositions();
         CreateDeck();
+    }
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+
+            ShuffleDeck();
+            DealCards();
+        }
     }
 
     void InitializeStackPositions()
@@ -112,6 +124,7 @@ public class GameManager : MonoBehaviour
         }
         
         // Add them to the deck stack instead of the deck list
+        /*
         for (int i = 0; i < 52; i++)
         {
             Card card = Instantiate(tempCard, DeckPosition, Quaternion.identity);
@@ -126,7 +139,7 @@ public class GameManager : MonoBehaviour
             // Add directly to the deck stack
             deckStack.AddCard(card);
         }
-        
+        */
         // Shuffle the deck
         ShuffleDeck();
     }
@@ -142,8 +155,8 @@ public class GameManager : MonoBehaviour
         card.Initialize(cardData);
         card.name = cardData.suit + " " + cardData.value + " " + cardData.color;
         card.transform.SetParent(canvas);
-    
-        deck.Add(card);
+        cardData.sprite = cardSuits[suit];
+        deckStack.AddCard(card);
     }
     void UpdateCardDisplay()
     {

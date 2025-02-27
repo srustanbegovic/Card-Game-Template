@@ -6,9 +6,11 @@ using UnityEngine.UI;
 
 public class Card : MonoBehaviour
 {
+    #region variables
     public Card_data data;
     public TextMeshProUGUI tcardText = null;
     public TextMeshProUGUI bcardText = null;
+    GameManager gm;
 
     private Image cardImage; 
 
@@ -19,6 +21,13 @@ public class Card : MonoBehaviour
     //public Sprite sprite;
     public Sprite sprite;
     public bool flipped;
+    #endregion
+
+    private void Start()
+    {
+        gm = FindObjectOfType<GameManager>();
+        //cardImage = GetComponent<Image>();
+    }
 
     public void Initialize(Card_data data)
     {
@@ -47,13 +56,14 @@ public class Card : MonoBehaviour
             print(cardText);
             tcardText.text = cardText;
             bcardText.text = cardText;
+            sprite = gm.cardSuits[suit];
            
         }
         else
         {
             tcardText.text = "";
             bcardText.text = "";
-            sprite = null; 
+            //sprite = null; 
         }
     }
 
