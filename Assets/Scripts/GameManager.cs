@@ -51,6 +51,7 @@ public class GameManager : MonoBehaviour
     public CardStack foundation4;
     public CardStack wastePile;
     public Sprite[] cardSuits;
+    public Vector3 mousePosition;
     #endregion
     
    
@@ -79,6 +80,14 @@ public class GameManager : MonoBehaviour
 
             ShuffleDeck();
             DealCards();
+        }
+        if (Input.GetMouseButtonDown(0))
+        {
+            mousePosition = Input.mousePosition;
+        }
+        if (Input.GetMouseButtonUp(0))
+        {
+            mousePosition = Vector3.zero;
         }
     }
 

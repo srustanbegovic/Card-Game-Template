@@ -21,12 +21,22 @@ public class Card : MonoBehaviour
     //public Sprite sprite;
     public Sprite sprite;
     public bool flipped;
+    public bool isHeld;
+
+    // Add these variables for drag and drop
+    private bool isDragging = false;
+    private Vector3 dragOffset;
+    private Vector3 startPosition;
+    private Transform startParent;
+    private CardStack sourceStack;
+    private GameManager gameManager;
     #endregion
 
     private void Start()
     {
         gm = FindObjectOfType<GameManager>();
         //cardImage = GetComponent<Image>();
+        gameManager = FindObjectOfType<GameManager>();
     }
 
     public void Initialize(Card_data data)
@@ -46,6 +56,33 @@ public class Card : MonoBehaviour
     public void BringToFront()
     {
         transform.SetAsLastSibling();
+    }
+    public void Update()
+    {
+        if (flipped) 
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                print("clicked");
+                isHeld = true;
+            }
+            if (Input.GetMouseButtonUp(0))
+            {
+                print("released");
+                isHeld = false;
+            }
+        }
+        if (isHeld)
+        {
+            transform.position = gm.mousePosition;
+        }
+
+        if (isDragging)
+        {
+            // Update position while dragging
+            Vector3 mousePos = Input.mousePosition;
+            transform.position = mousePos + dragOffset;
+        }
     }
     public void UpdateCardDisplay()
     {
@@ -86,5 +123,141 @@ public class Card : MonoBehaviour
     {
         string [] cardText = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
         return (cardText[(value - 1)]);
+    }
+
+    // Detect card click
+    public void OnMouseDown()
+    {
+        // Only allow dragging face-up cards
+        if (!flipped) return;
+        
+        // Find which stack this card belongs to
+        sourceStack = GetComponentInParent<CardStack>();
+        if (sourceStack == null) return;
+        
+        // In tableau stacks, you can only drag the top card or sequential runs
+        if (sourceStack.isTableau)
+        {
+            // Check if this is the top card or part of a valid sequence
+            int cardIndex = sourceStack.cardsInStack.IndexOf(this);
+            if (cardIndex < 0) return; // Not in the stack
+            
+            // If not the top card, check if all cards above it form a valid sequence
+            if (cardIndex < sourceStack.cardsInStack.Count - 1)
+            {
+                // Check if it's a valid sequence (alternating colors, descending values)
+                for (int i = cardIndex; i < sourceStack.cardsInStack.Count - 1; i++)
+                {
+                    Card current = sourceStack.cardsInStack[i];
+                    Card next = sourceStack.cardsInStack[i + 1];
+                    
+                    if (current.color == next.color || current.value != next.value + 1)
+                    {
+                        // Not a valid sequence
+                        return;
+                    }
+                }
+            }
+        }
+        else if (sourceStack.stackName != "WastePile")
+        {
+            // For non-tableau stacks like foundations, only the top card can be moved
+            if (this != sourceStack.PeekTopCard())
+                return;
+        }
+        
+        // Start dragging
+        isDragging = true;
+        startPosition = transform.position;
+        startParent = transform.parent;
+        
+        // Calculate offset so the card doesn't jump to cursor position
+        dragOffset = transform.position - Input.mousePosition;
+        
+        // Bring card to front for dragging
+        transform.SetParent(GameObject.Find("Canvas").transform);
+        BringToFront();
+    }
+
+    // Detect card release
+    public void OnMouseUp()
+    {
+        if (!isDragging) return;
+        isDragging = false;
+        
+        // Try to find a target stack under the mouse
+        CardStack targetStack = FindTargetStack();
+        
+        if (targetStack != null && CanMoveToStack(targetStack))
+        {
+            // Get all cards to move (this card and any on top of it)
+            List<Card> cardsToMove = sourceStack.GetCardsOnTop(this);
+            
+            // Move all cards to the target stack
+            foreach (Card card in cardsToMove)
+            {
+                sourceStack.RemoveCard(card);
+                targetStack.AddCard(card);
+            }
+        }
+        else
+        {
+            // Invalid move, return to original position
+            transform.SetParent(startParent);
+            transform.position = startPosition;
+            sourceStack.RepositionCards();
+        }
+    }
+
+    // Find which stack is under the mouse position
+    private CardStack FindTargetStack()
+    {
+        // Raycast to find what's under the mouse
+        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+        
+        if (hit.collider != null)
+        {
+            // Check if we hit a stack
+            CardStack stack = hit.collider.GetComponent<CardStack>();
+            if (stack != null)
+                return stack;
+                
+            // Check if we hit another card
+            Card card = hit.collider.GetComponent<Card>();
+            if (card != null)
+                return card.GetComponentInParent<CardStack>();
+        }
+        
+        // Try finding nearby stacks (since precise hits can be difficult)
+        CardStack[] allStacks = FindObjectsOfType<CardStack>();
+        float closestDistance = float.MaxValue;
+        CardStack closestStack = null;
+        
+        foreach (CardStack stack in allStacks)
+        {
+            float distance = Vector3.Distance(stack.transform.position, transform.position);
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                closestStack = stack;
+            }
+        }
+        
+        // Only return if it's close enough
+        if (closestDistance < 100f) // Adjust this threshold as needed
+            return closestStack;
+            
+        return null;
+    }
+
+    // Check if this card can be moved to the target stack
+    private bool CanMoveToStack(CardStack targetStack)
+    {
+        // Can't move to the same stack
+        if (targetStack == sourceStack)
+            return false;
+            
+        // Check if the move is valid according to solitaire rules
+        return targetStack.CanAddCard(this);
     }
 }
