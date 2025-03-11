@@ -167,7 +167,7 @@ public class GameManager : MonoBehaviour
         cardData.sprite = cardSuits[suit];
         deckStack.AddCard(card);
     }
-    void UpdateCardDisplay()
+    public void UpdateCardDisplay()
     {
         foreach (Card card in deck)
         {

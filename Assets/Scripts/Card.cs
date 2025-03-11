@@ -25,7 +25,7 @@ public class Card : MonoBehaviour
 
     // Add these variables for drag and drop
     private bool isDragging = false;
-    private Vector3 dragOffset;
+    private Vector3 dragOffset = new Vector3(-400,-100,0);
     private Vector3 startPosition;
     private Transform startParent;
     private CardStack sourceStack;
@@ -63,13 +63,16 @@ public class Card : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0))
             {
-                print("clicked");
-                isHeld = true;
+                if (Vector3.Distance(transform.position, gm.mousePosition+dragOffset) < 50f)
+                {
+                    print("clicked");
+                    isHeld = true;
+                }
             }
             if (Input.GetMouseButtonUp(0))
             {
-                print("released");
                 isHeld = false;
+                gm.UpdateCardDisplay();
             }
         }
         if (isHeld)
@@ -77,7 +80,7 @@ public class Card : MonoBehaviour
             transform.position = gm.mousePosition;
         }
 
-        if (isDragging)
+        if (isHeld)
         {
             // Update position while dragging
             Vector3 mousePos = Input.mousePosition;
@@ -86,6 +89,7 @@ public class Card : MonoBehaviour
     }
     public void UpdateCardDisplay()
     {
+        CheckifFlipped();
         if (flipped) 
         {
             string cardText = GetCardText();
@@ -118,7 +122,10 @@ public class Card : MonoBehaviour
             //sprite = null; 
         }
     }
-
+    public void CheckifFlipped()
+    {
+        
+    }
     private  string GetCardText()
     {
         string [] cardText = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
@@ -190,6 +197,9 @@ public class Card : MonoBehaviour
         
         if (targetStack != null && CanMoveToStack(targetStack))
         {
+            // Remember if this card was from the deck stack
+            bool wasFromDeck = (sourceStack != null && sourceStack.stackName == "DeckStack");
+            
             // Get all cards to move (this card and any on top of it)
             List<Card> cardsToMove = sourceStack.GetCardsOnTop(this);
             
@@ -198,6 +208,17 @@ public class Card : MonoBehaviour
             {
                 sourceStack.RemoveCard(card);
                 targetStack.AddCard(card);
+            }
+            
+            // If this card was moved from the deck, flip the next card if available
+            if (wasFromDeck && sourceStack.cardsInStack.Count > 0)
+            {
+                Card newTopCard = sourceStack.PeekTopCard();
+                if (newTopCard != null && !newTopCard.flipped)
+                {
+                    newTopCard.flipped = true;
+                    newTopCard.UpdateCardDisplay();
+                }
             }
         }
         else

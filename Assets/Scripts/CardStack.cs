@@ -27,6 +27,22 @@ public class CardStack : MonoBehaviour
         // Position the card appropriately in the stack
         RepositionCards();
     }
+    public void Update()
+    {
+        if (Input.GetMouseButtonUp(0))
+        {
+            print("released");
+            if (cardsInStack.Count > 0 && isTableau)
+            {
+                Card topCard = cardsInStack[cardsInStack.Count - 1];
+                if (!topCard.flipped)
+                {
+                    topCard.flipped = true;
+                    topCard.UpdateCardDisplay();
+                }
+            }
+        }
+    }
     
     // Remove a card from this stack
     public Card RemoveCard(Card card)
