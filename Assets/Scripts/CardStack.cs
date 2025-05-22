@@ -8,6 +8,7 @@ public class CardStack : MonoBehaviour
     public string stackName;
     public float verticalOffset = 30f; // Distance between cards in the stack
     public bool isTableau = false; // Is this a tableau stack with cascading cards?
+    //V2
     
     [Header("References")]
     public List<Card> cardsInStack = new List<Card>();
@@ -100,9 +101,6 @@ public class CardStack : MonoBehaviour
             
             if (card != null)
             {
-                // Position the card with proper vertical offset
-                // If it's a tableau, we cascade down vertically
-                // Otherwise, cards stack with minimal offset
                 float yOffset = isTableau ? verticalOffset * i : 0.5f * i;
                 
                 card.transform.position = new Vector3(
@@ -110,8 +108,6 @@ public class CardStack : MonoBehaviour
                     basePosition.y - yOffset,
                     basePosition.z - (0.01f * i) // Tiny Z-offset for visual clarity
                 );
-                
-                // Set sibling index to ensure proper layering - higher index appears on top
                 card.transform.SetSiblingIndex(i);
             }
         }
