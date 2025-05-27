@@ -30,19 +30,7 @@ public class CardStack : MonoBehaviour
     }
     public void Update()
     {
-        if (Input.GetMouseButtonUp(0))
-        {
-            print("released");
-            if (cardsInStack.Count > 0 && isTableau)
-            {
-                Card topCard = cardsInStack[cardsInStack.Count - 1];
-                if (!topCard.flipped)
-                {
-                    topCard.flipped = true;
-                    topCard.UpdateCardDisplay();
-                }
-            }
-        }
+    
     }
     
     // Remove a card from this stack
@@ -72,22 +60,12 @@ public class CardStack : MonoBehaviour
     }
     
     // Remove the top card from the stack
-    public Card RemoveTopCard()
-    {
-        if (cardsInStack.Count > 0)
-        {
-            Card topCard = cardsInStack[cardsInStack.Count - 1];
-            return RemoveCard(topCard);
-        }
-        return null;
-    }
+    
     
     // Get the top card without removing it
     public Card PeekTopCard()
     {
-        if (cardsInStack.Count > 0)
-            return cardsInStack[cardsInStack.Count - 1];
-        return null;
+        
     }
     
     // Reposition all cards in the stack with proper layering
@@ -110,6 +88,15 @@ public class CardStack : MonoBehaviour
                 );
                 card.transform.SetSiblingIndex(i);
             }
+        }
+    }
+    public void DeclareTop()
+    {
+        if (cardsInStack.Count > 0)
+        {
+            Card topCard = cardsInStack[cardsInStack.Count - 1];
+            topCard.topCard = true;
+            topCard.UpdateCardDisplay();
         }
     }
     

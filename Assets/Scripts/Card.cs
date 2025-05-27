@@ -21,7 +21,7 @@ public class Card : MonoBehaviour
     //public Sprite sprite;
     public Sprite sprite;
     public bool flipped;
-    public bool isHeld;
+    public bool topCard = false; // Is this card the top card in a stack?
 
     // Add these variables for drag and drop
     private bool isDragging = false;
@@ -75,17 +75,7 @@ public class Card : MonoBehaviour
                 gm.UpdateCardDisplay();
             }
         }
-        if (isHeld)
-        {
-            transform.position = gm.mousePosition;
-        }
-
-        if (isHeld)
-        {
-            // Update position while dragging
-            Vector3 mousePos = Input.mousePosition;
-            transform.position = mousePos + dragOffset;
-        }
+        
     }
     public void UpdateCardDisplay()
     {
@@ -126,6 +116,7 @@ public class Card : MonoBehaviour
     {
         
     }
+    
     private  string GetCardText()
     {
         string [] cardText = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };

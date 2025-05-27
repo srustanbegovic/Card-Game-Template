@@ -22,7 +22,8 @@ public class GameManager : MonoBehaviour
     public Vector3 c6pos;
     public List<Card> c7 = new List<Card>();
     public Vector3 c7pos;
-    
+    public CardStack cardstackcode;
+
 
     public List<Card> aces = new List<Card>();
     public List<Card> clubs = new List<Card>();
@@ -74,6 +75,8 @@ public class GameManager : MonoBehaviour
     {
         //InitializeStackPositions();
         CreateDeck();
+        selectedCard = null;
+        cardstackcode = FindObjectOfType<CardStack>();
     }
     void Update()
     {
@@ -86,7 +89,14 @@ public class GameManager : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             mousePosition = Input.mousePosition;
-            
+            if (selectedCard = null)
+            {
+                CheckHoveredCard();
+            }
+            else
+            {
+                checkHoveredStack();
+            }
         }
         if (Input.GetMouseButtonUp(0))
         {
@@ -253,6 +263,7 @@ public class GameManager : MonoBehaviour
         DealToTableau(tableau5, 5);
         DealToTableau(tableau6, 6);
         DealToTableau(tableau7, 7);
+        cardstackcode.DeclareTop();
     }
     #endregion
 
@@ -276,15 +287,76 @@ public class GameManager : MonoBehaviour
         }
     }
     #endregion
+    public void CheckHoveredCard()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
+        {
+            // Check if the object hit has a Card component
+            Card hoveredCard = hit.collider.GetComponent<Card>();
+            if (hoveredCard != null)
+            {
+                Debug.Log($"Hovered over card: Suit = {hoveredCard.suit}, Value = {hoveredCard.value}");
+                selectedCard = hit.collider.gameObject; // Store the selected card
+            }
+            else
+            {
+                Debug.Log("No card hovered.");
+                selectedCard = null; // Clear the selected card if no card is hovered
+            }
+        }
+    }
+    public void checkHoveredStack()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
+        {
+            // Check if the object hit has a CardStack component
+            CardStack hoveredStack = hit.collider.GetComponent<CardStack>();
+            if (hoveredStack != null)
+            {
+                Debug.Log($"Hovered over stack: {hoveredStack.name}");
+                hoveredStack = targetStack; // Store the hovered stack
+                // If a card is selected, move it to this stack
+                if (selectedCard != null)
+                {
+                    Card card = selectedCard.GetComponent<Card>();
+                    if (selectedCard.topCard = true)
+                    {
+                        MoveCard(card, card.currentStack, targetStack);
+                    }
 
+                    if (selectedCard.topCard = false)
+                    {
+                        MoveStack(card, card.currentStack, targetStack, 1);
+                    }
+                    
+                    
+                }
+            }
+            else
+            {
+                Debug.Log("No stack hovered.");
+                selectedCard = null;
+            }
+        }
+    }
     // Method to move a card between stacks
     public void MoveCard(Card card, CardStack sourceStack, CardStack targetStack)
     {
-        // Remove from source
-        sourceStack.RemoveCard(card);
-        
-        // Add to target
-        targetStack.AddCard(card);
+        if (CheckIfcanMoveToStack(card, targetStack) == false)
+        {
+            Debug.Log("Cannot move card to target stack.");
+            return;
+        }
+        else
+        {
+            sourceStack.RemoveCard(card);
+            targetStack.AddCard(card);
+        }
+       
     }
     public void MoveStack(Card card, CardStack sourceStack, CardStack targetStack, int card_amount)
     {

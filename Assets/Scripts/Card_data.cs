@@ -11,4 +11,5 @@ public class Card_data : ScriptableObject
     public int color; 
     public Sprite sprite;
     public bool flipped;
+    public bool topCard = false; // Is this card the top card in a stack?
 }
