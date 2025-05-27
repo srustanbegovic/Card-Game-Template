@@ -113,52 +113,5 @@ public class CardStack : MonoBehaviour
         }
     }
     
-    // Check if a card can be added to this stack according to solitaire rules
-    public bool CanAddCard(Card card)
-    {
-        // Foundation stacks (build up by suit)
-        if (stackName.Contains("Foundation"))
-        {
-            // Empty foundation can only take Aces
-            if (cardsInStack.Count == 0)
-                return card.value == 1; // Ace
-                
-            Card topCard = PeekTopCard();
-            // Same suit, one higher value
-            return (card.suit == topCard.suit && card.value == topCard.value + 1);
-        }
-        
-        // Tableau stacks (build down, alternating colors)
-        if (isTableau)
-        {
-            // Empty tableau can take any card (traditionally a King, but we'll allow any)
-            if (cardsInStack.Count == 0)
-                return true;
-                
-            Card topCard = PeekTopCard();
-            // Different color, one lower value
-            return (card.color != topCard.color && card.value == topCard.value - 1);
-        }
-        
-        // For other stacks, like waste pile, we don't have restrictions
-        return true;
-    }
     
-    // For tableau stacks, we want to be able to move multiple cards at once
-    public List<Card> GetCardsOnTop(Card startCard)
-    {
-        List<Card> cardsToMove = new List<Card>();
-        
-        if (cardsInStack.Contains(startCard))
-        {
-            int startIndex = cardsInStack.IndexOf(startCard);
-            
-            for (int i = startIndex; i < cardsInStack.Count; i++)
-            {
-                cardsToMove.Add(cardsInStack[i]);
-            }
-        }
-        
-        return cardsToMove;
-    }
 }

@@ -135,103 +135,13 @@ public class Card : MonoBehaviour
     // Detect card click
     public void OnMouseDown()
     {
-        // Only allow dragging face-up cards
-        if (!flipped) return;
         
-        // Find which stack this card belongs to
-        sourceStack = GetComponentInParent<CardStack>();
-        if (sourceStack == null) return;
-        
-        // In tableau stacks, you can only drag the top card or sequential runs
-        if (sourceStack.isTableau)
-        {
-            // Check if this is the top card or part of a valid sequence
-            int cardIndex = sourceStack.cardsInStack.IndexOf(this);
-            if (cardIndex < 0) return; // Not in the stack
-            
-            // If not the top card, check if all cards above it form a valid sequence
-            if (cardIndex < sourceStack.cardsInStack.Count - 1)
-            {
-                // Check if it's a valid sequence (alternating colors, descending values)
-                for (int i = cardIndex; i < sourceStack.cardsInStack.Count - 1; i++)
-                {
-                    Card current = sourceStack.cardsInStack[i];
-                    Card next = sourceStack.cardsInStack[i + 1];
-                    
-                    if (current.color == next.color || current.value != next.value + 1)
-                    {
-                        // Not a valid sequence
-                        return;
-                    }
-                }
-            }
-        }
-        else if (sourceStack.stackName != "WastePile")
-        {
-            // For non-tableau stacks like foundations, only the top card can be moved
-            if (this != sourceStack.PeekTopCard())
-                return;
-        }
-        
-        // Start dragging
-        isDragging = true;
-        startPosition = transform.position;
-        startParent = transform.parent;
-        
-        // Calculate offset so the card doesn't jump to cursor position
-        dragOffset = transform.position - Input.mousePosition;
-        
-        // Bring card to front for dragging
-        transform.SetParent(GameObject.Find("Canvas").transform);
-        BringToFront();
     }
 
-    // Detect card release
-    public void OnMouseUp()
-    {
-        if (!isDragging) return;
-        isDragging = false;
-        
-        // Try to find a target stack under the mouse
-        CardStack targetStack = FindTargetStack();
-        
-        if (targetStack != null && CanMoveToStack(targetStack))
-        {
-            // Remember if this card was from the deck stack
-            bool wasFromDeck = (sourceStack != null && sourceStack.stackName == "DeckStack");
-            
-            // Get all cards to move (this card and any on top of it)
-            List<Card> cardsToMove = sourceStack.GetCardsOnTop(this);
-            
-            // Move all cards to the target stack
-            foreach (Card card in cardsToMove)
-            {
-                sourceStack.RemoveCard(card);
-                targetStack.AddCard(card);
-            }
-            
-            // If this card was moved from the deck, flip the next card if available
-            if (wasFromDeck && sourceStack.cardsInStack.Count > 0)
-            {
-                Card newTopCard = sourceStack.PeekTopCard();
-                if (newTopCard != null && !newTopCard.flipped)
-                {
-                    newTopCard.flipped = true;
-                    newTopCard.UpdateCardDisplay();
-                }
-            }
-        }
-        else
-        {
-            // Invalid move, return to original position
-            transform.SetParent(startParent);
-            transform.position = startPosition;
-            sourceStack.RepositionCards();
-        }
-    }
+
 
     // Find which stack is under the mouse position
-    private CardStack FindTargetStack()
+    /*private CardStack FindTargetStack()
     {
         // Raycast to find what's under the mouse
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
@@ -269,7 +179,7 @@ public class Card : MonoBehaviour
             return closestStack;
             
         return null;
-    }
+    }*/
 
     // Check if this card can be moved to the target stack
     private bool CanMoveToStack(CardStack targetStack)

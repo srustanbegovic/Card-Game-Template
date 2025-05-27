@@ -52,6 +52,8 @@ public class GameManager : MonoBehaviour
     public CardStack wastePile;
     public Sprite[] cardSuits;
     public Vector3 mousePosition;
+    public GameObject selectedCard;
+    
     #endregion
     
    
@@ -84,6 +86,7 @@ public class GameManager : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             mousePosition = Input.mousePosition;
+            
         }
         if (Input.GetMouseButtonUp(0))
         {
@@ -152,7 +155,7 @@ public class GameManager : MonoBehaviour
         // Shuffle the deck
         ShuffleDeck();
     }
-    
+    #region Card Creation
     void CreateCard(int suit, int value, int color)
     {
         Card_data cardData = ScriptableObject.CreateInstance<Card_data>();
@@ -167,6 +170,9 @@ public class GameManager : MonoBehaviour
         cardData.sprite = cardSuits[suit];
         deckStack.AddCard(card);
     }
+    #endregion
+
+    #region Card Display
     public void UpdateCardDisplay()
     {
         foreach (Card card in deck)
@@ -202,7 +208,11 @@ public class GameManager : MonoBehaviour
             card.UpdateCardDisplay();
         }
     }
+    #endregion
     
+    #region Shuffle Deck
+
+
     void ShuffleDeck()
     {
         // Create a temporary list of cards
@@ -226,7 +236,9 @@ public class GameManager : MonoBehaviour
             deckStack.AddCard(card);
         }
     }
+    #endregion
 
+    #region Deal Cards
     void DealCards()
     {
         // Deal to tableau 1 (1 card)
@@ -242,7 +254,9 @@ public class GameManager : MonoBehaviour
         DealToTableau(tableau6, 6);
         DealToTableau(tableau7, 7);
     }
+    #endregion
 
+    #region Deal to Tableau
     void DealToTableau(CardStack tableau, int numCards)
     {
         for (int i = 0; i < numCards; i++)
@@ -261,6 +275,7 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+    #endregion
 
     // Method to move a card between stacks
     public void MoveCard(Card card, CardStack sourceStack, CardStack targetStack)
@@ -270,5 +285,9 @@ public class GameManager : MonoBehaviour
         
         // Add to target
         targetStack.AddCard(card);
+    }
+    public void MoveStack(Card card, CardStack sourceStack, CardStack targetStack, int card_amount)
+    {
+        
     }
 }
