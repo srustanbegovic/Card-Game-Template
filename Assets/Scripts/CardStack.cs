@@ -63,10 +63,6 @@ public class CardStack : MonoBehaviour
     
     
     // Get the top card without removing it
-    public Card PeekTopCard()
-    {
-        
-    }
     
     // Reposition all cards in the stack with proper layering
     public void RepositionCards()

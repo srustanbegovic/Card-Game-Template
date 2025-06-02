@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-   #region variables
+    #region variables
     public static GameManager gm;
-    
+
     public List<Card> deck = new List<Card>();
     public List<Card> c1 = new List<Card>();
-    public Vector3 c1pos; 
+    public Vector3 c1pos;
     public List<Card> c2 = new List<Card>();
     public Vector3 c2pos;
     public List<Card> c3 = new List<Card>();
@@ -31,9 +31,9 @@ public class GameManager : MonoBehaviour
     public List<Card> diamonds = new List<Card>();
     public List<Card> flippedcards = new List<Card>();
     public int suit;
-    public int value;   
+    public int value;
     public int color;
-    public int cardnumber; 
+    public int cardnumber;
     public Vector3 DeckPosition;
     public Card tempCard;
     public Transform canvas;
@@ -54,10 +54,10 @@ public class GameManager : MonoBehaviour
     public Sprite[] cardSuits;
     public Vector3 mousePosition;
     public GameObject selectedCard;
-    
+
     #endregion
-    
-   
+
+
     private void Awake()
     {
         if (gm != null && gm != this)
@@ -108,7 +108,7 @@ public class GameManager : MonoBehaviour
     {
         // Set positions of all stacks
         //deckStack.transform.position = DeckPosition;
-        
+
         // Set tableau positions
         tableau1.transform.position = c1pos;
         tableau2.transform.position = c2pos;
@@ -117,7 +117,7 @@ public class GameManager : MonoBehaviour
         tableau5.transform.position = c5pos;
         tableau6.transform.position = c6pos;
         tableau7.transform.position = c7pos;
-        
+
         // Set foundation positions (wherever you want them)
         // foundation1.transform.position = ...
         // ...
@@ -127,7 +127,7 @@ public class GameManager : MonoBehaviour
     {
         value = 1;
         suit = 0;
-        color =0; 
+        color = 0;
         for (int i = 1; i < 53; i++)
         {
             if (i % 13 == 0)
@@ -139,12 +139,12 @@ public class GameManager : MonoBehaviour
             {
                 color++;
             }
-    
+
             //print("Suit: " + suit + " Value: " + value + " Color: " + color);
             CreateCard(suit, value, color);
             value++;
         }
-        
+
         // Add them to the deck stack instead of the deck list
         /*
         for (int i = 0; i < 52; i++)
@@ -219,7 +219,7 @@ public class GameManager : MonoBehaviour
         }
     }
     #endregion
-    
+
     #region Shuffle Deck
 
 
@@ -227,10 +227,10 @@ public class GameManager : MonoBehaviour
     {
         // Create a temporary list of cards
         List<Card> tempDeckList = new List<Card>(deckStack.cardsInStack);
-        
+
         // Clear the deck stack
         deckStack.cardsInStack.Clear();
-        
+
         // Fisher-Yates shuffle
         for (int i = 0; i < tempDeckList.Count; i++)
         {
@@ -239,7 +239,7 @@ public class GameManager : MonoBehaviour
             tempDeckList[i] = tempDeckList[randomIndex];
             tempDeckList[randomIndex] = temp;
         }
-        
+
         // Add cards back to deck stack in shuffled order
         foreach (Card card in tempDeckList)
         {
@@ -253,10 +253,10 @@ public class GameManager : MonoBehaviour
     {
         // Deal to tableau 1 (1 card)
         DealToTableau(tableau1, 1);
-        
+
         // Deal to tableau 2 (2 cards)
         DealToTableau(tableau2, 2);
-        
+
         // And so on...
         DealToTableau(tableau3, 3);
         DealToTableau(tableau4, 4);
@@ -275,12 +275,12 @@ public class GameManager : MonoBehaviour
             if (deckStack.cardsInStack.Count > 0)
             {
                 // Get top card from deck
-                Card card = deckStack.RemoveTopCard();
-                
+                Card card = deckStack.RemoveCard();
+
                 // Only flip the top card of each tableau
                 card.flipped = (i == numCards - 1);
                 card.UpdateCardDisplay();
-                
+
                 // Add to tableau
                 tableau.AddCard(card);
             }
@@ -332,8 +332,8 @@ public class GameManager : MonoBehaviour
                     {
                         MoveStack(card, card.currentStack, targetStack, 1);
                     }
-                    
-                    
+
+
                 }
             }
             else
@@ -344,22 +344,38 @@ public class GameManager : MonoBehaviour
         }
     }
     // Method to move a card between stacks
-    public void MoveCard(Card card, CardStack sourceStack, CardStack targetStack)
+    public void MoveCard(Card selectedCard, CardStack sourceStack, CardStack targetStack)
     {
-        if (CheckIfcanMoveToStack(card, targetStack) == false)
+        CheckIfCanMove(selectedCard, targetStack);
+        if (CheckIfCanMove(selectedCard, targetStack) == false)
         {
             Debug.Log("Cannot move card to target stack.");
             return;
         }
         else
         {
-            sourceStack.RemoveCard(card);
-            targetStack.AddCard(card);
+            sourceStack.RemoveCard(selectedCard);
+            targetStack.AddCard(selectedCard);
         }
-       
+
     }
     public void MoveStack(Card card, CardStack sourceStack, CardStack targetStack, int card_amount)
     {
-        
+
+    }
+    public bool CheckIfCanMove(Card selectedCard, CardStack targetStack)
+    {
+        if (targetStack.topCard.suit == selectedCard.suit)
+        {
+            return false;
+        }
+        if (targetStack.topCard.value == selectedCard.value + 1)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }

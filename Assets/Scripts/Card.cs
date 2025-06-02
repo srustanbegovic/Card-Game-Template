@@ -59,22 +59,7 @@ public class Card : MonoBehaviour
     }
     public void Update()
     {
-        if (flipped) 
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                if (Vector3.Distance(transform.position, gm.mousePosition+dragOffset) < 50f)
-                {
-                    print("clicked");
-                    isHeld = true;
-                }
-            }
-            if (Input.GetMouseButtonUp(0))
-            {
-                isHeld = false;
-                gm.UpdateCardDisplay();
-            }
-        }
+        
         
     }
     public void UpdateCardDisplay()
@@ -178,8 +163,8 @@ public class Card : MonoBehaviour
         // Can't move to the same stack
         if (targetStack == sourceStack)
             return false;
-            
+
         // Check if the move is valid according to solitaire rules
-        return targetStack.CanAddCard(this);
+        return true;
     }
 }
