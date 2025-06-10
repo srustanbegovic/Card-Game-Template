@@ -8,7 +8,8 @@ public class CardStack : MonoBehaviour
     public string stackName;
     public float verticalOffset = 30f; // Distance between cards in the stack
     public bool isTableau = false; // Is this a tableau stack with cascading cards?
-    //V2
+                                   //V2
+    public GameObject topCard;
     
     [Header("References")]
     public List<Card> cardsInStack = new List<Card>();
@@ -30,7 +31,8 @@ public class CardStack : MonoBehaviour
     }
     public void Update()
     {
-    
+        //declare which card is the top card of the stack 
+        topCard = cardsInStack[cardsInStack.Count - 1].gameObject;
     }
     
     // Remove a card from this stack

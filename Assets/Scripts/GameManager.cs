@@ -93,10 +93,6 @@ public class GameManager : MonoBehaviour
             {
                 CheckHoveredCard();
             }
-            else
-            {
-                checkHoveredStack();
-            }
         }
         if (Input.GetMouseButtonUp(0))
         {
@@ -272,10 +268,11 @@ public class GameManager : MonoBehaviour
     {
         for (int i = 0; i < numCards; i++)
         {
-            if (deckStack.cardsInStack.Count > 0)
+            if (tableau.cardsInStack.Count > 0)
             {
                 // Get top card from deck
-                Card card = deckStack.RemoveCard();
+                Card card = deckStack.cardsInStack[deckStack.cardsInStack.Count - 1];
+                tableau.RemoveCard(card);
 
                 // Only flip the top card of each tableau
                 card.flipped = (i == numCards - 1);
@@ -307,7 +304,7 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-    public void checkHoveredStack()
+    /*public void checkHoveredStack()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
@@ -342,7 +339,7 @@ public class GameManager : MonoBehaviour
                 selectedCard = null;
             }
         }
-    }
+    }*/
     // Method to move a card between stacks
     public void MoveCard(Card selectedCard, CardStack sourceStack, CardStack targetStack)
     {
